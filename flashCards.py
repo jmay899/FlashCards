@@ -56,23 +56,32 @@ for i in range(1,numPres+1):
 #Ask questions in random order, keeping score
 correctNum = 0
 askedNum = 0
-
+lastResponse = -1
 response = ""
 while response.lower().strip() != "quit":
-	import random
 	#generate random question number, ask user, check if correct
+	import random
 	questionNum = random.randint(1,len(presidentQuestions)-1) 
+	#prevent same question twice consecutively
+	while questionNum == lastResponse:
+		questionNum = random.randint(1,len(presidentQuestions)-1) 
+	lastResponse = questionNum
+	
 	userResponse = input(presidentCards[questionNum].question)
 	
-	if(userResponse.lower().strip() == presidentCards[questionNum].answer.lower() or userResponse.lower().strip() == presidentCards[questionNum].altAnswer.lower()):
+	if userResponse.lower().strip() == presidentCards[questionNum].answer.lower() or userResponse.lower().strip() == presidentCards[questionNum].altAnswer.lower(): 
 		askedNum += 1
 		correctNum += 1
-		print("Correct! Grade so far: " + str(correctNum) + "/" + str(askedNum))
-		
-	elif(userResponse.lower().strip() == "quit"):
-		print("Final grade: " + str(correctNum) + "/" + str(askedNum))
+		percentGrade = 100.00*(correctNum/askedNum)
+		print("Correct! Grade so far: " + str(correctNum) + "/" + str(askedNum) + " (" + str(round(percentGrade,2)) + "%)" + "\n")
+	#quit
+	elif userResponse.lower().strip() == "quit":
+		percentGrade = 100.00*(correctNum/askedNum)
+		print("Final grade: " + str(correctNum) + "/" + str(askedNum) + " (" + str(round(percentGrade,2)) + "%)")
 		break
-		
-	else: #incorrect answer
+	#incorrect answer
+	else:
 		askedNum += 1
-		print("Incorrect! The correct answer is " + presidentCards[questionNum].answer + ". Grade so far: " + str(correctNum) + "/" + str(askedNum))
+		percentGrade = 100.00*(correctNum/askedNum)
+		print("Incorrect! The correct answer is " + presidentCards[questionNum].answer + 
+		".\n Grade so far: " + str(correctNum) + "/" + str(askedNum) + " (" + str(round(percentGrade,2)) + "%)""\n")
